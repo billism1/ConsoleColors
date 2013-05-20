@@ -2,22 +2,23 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Text.RegularExpressions;
     using System.Threading;
 
     public class CrazyColorsConsoleWriter : ConsoleWriterBase
     {
-        private bool printStatistics;
+        private const int MaxColorEnum = 15;
 
-        private int maxColorEnum = 15;
+        private readonly bool printStatistics;
 
         /// <summary>
         /// Use decimal chars from a newly generated guid to generate a salt value. Otherwise, pseudo-random 
         /// values won't really be very random if starting multiple threads at once.
         /// </summary>
-        private Random rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
+        private readonly Random rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
 
-        private List<string> products = new List<string>();
+        private readonly List<string> coordinates = new List<string>();
 
         public CrazyColorsConsoleWriter(object lockObj, int width, int height, int sleepTime, bool printStatistics)
         {
@@ -39,38 +40,43 @@
             {
                 lock (this.LockObj)
                 {
-                    Console.ForegroundColor = (ConsoleColor)rand.Next(0, maxColorEnum);
-                    Console.BackgroundColor = (ConsoleColor)rand.Next(0, maxColorEnum);
-                    Console.CursorLeft = rand.Next(0, this.Width);
-                    Console.CursorTop = rand.Next(0, this.Height);
-                    Console.Write((char)(rand.Next(32, 126))); // Printable ascii latters
+                    Console.ForegroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
+                    Console.BackgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
+                    Console.CursorLeft = this.rand.Next(0, this.Width);
+                    Console.CursorTop = this.rand.Next(0, this.Height);
+                    Console.Write((char)this.rand.Next(32, 126)); // Printable ascii latters
                 }
 
-                if (this.printStatistics)
-                    PrinstStatistics(start, cellCount);
+                this.PrinstStatistics(start, cellCount, Console.CursorLeft, Console.CursorTop);
 
                 Thread.Sleep(this.SleepTime);
             }
         }
 
-        private void PrinstStatistics(DateTime start, int cellCount)
+        private void PrinstStatistics(DateTime start, int cellCount, int left, int top)
         {
-            var product = Console.CursorLeft.ToString() + ":" + Console.CursorTop.ToString();
-
-            if (!products.Contains(product))
+            if (!this.printStatistics)
             {
-                products.Add(product);
+                return;
             }
-            this.Run = this.Run && products.Count < cellCount;
+
+            var coordinate = left.ToString(CultureInfo.InvariantCulture) + ":" + top.ToString(CultureInfo.InvariantCulture);
+
+            if (!this.coordinates.Contains(coordinate))
+            {
+                this.coordinates.Add(coordinate);
+            }
+
+            this.Run = this.Run && this.coordinates.Count < cellCount;
 
             lock (this.LockObj)
             {
                 Console.CursorLeft = 0;
-                Console.CursorTop = this.Height - 1;
+                Console.CursorTop = this.Height - 2;
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.WriteLine("Time Lapsed: " + (DateTime.Now - start));
-                Console.WriteLine(products.Count.ToString() + " of " + cellCount.ToString() + " cells populated.");
+                Console.WriteLine(this.coordinates.Count.ToString(CultureInfo.InvariantCulture) + " of " + cellCount.ToString(CultureInfo.InvariantCulture) + " cells populated.");
             }
         }
     }
