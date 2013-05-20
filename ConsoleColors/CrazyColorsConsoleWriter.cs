@@ -44,32 +44,39 @@
                     Console.CursorLeft = rand.Next(0, this.Width);
                     Console.CursorTop = rand.Next(0, this.Height);
                     Console.Write((char)(rand.Next(32, 126))); // Printable ascii latters
-
-                    PrinstStatistics(start, cellCount);
                 }
+
+                PrinstStatistics(start, cellCount, Console.CursorLeft, Console.CursorTop);
 
                 Thread.Sleep(this.SleepTime);
             }
         }
 
-        private void PrinstStatistics(DateTime start, int cellCount)
+        private void PrinstStatistics(DateTime start, int cellCount, int left, int top)
         {
-            if (!this.printStatistics) return;
+            if (!this.printStatistics)
+            {
+                return;
+            }
 
-            var product = Console.CursorLeft.ToString() + ":" + Console.CursorTop.ToString();
+            var product = left.ToString() + ":" + top.ToString();
 
             if (!products.Contains(product))
             {
                 products.Add(product);
             }
+
             this.Run = this.Run && products.Count < cellCount;
 
-            Console.CursorLeft = 0;
-            Console.CursorTop = this.Height - 2;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.WriteLine("Time Lapsed: " + (DateTime.Now - start));
-            Console.WriteLine(products.Count.ToString() + " of " + cellCount.ToString() + " cells populated.");
+            lock (this.LockObj)
+            {
+                Console.CursorLeft = 0;
+                Console.CursorTop = this.Height - 2;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.WriteLine("Time Lapsed: " + (DateTime.Now - start));
+                Console.WriteLine(products.Count.ToString() + " of " + cellCount.ToString() + " cells populated.");
+            }
         }
     }
 }
