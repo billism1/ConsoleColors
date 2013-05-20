@@ -15,19 +15,15 @@
         private readonly Random rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
 
         public ColorCirclesConsoleWriter(object lockObj, int width, int height, int sleepTime)
+            : base(lockObj, width, height, sleepTime)
         {
-            this.LockObj = lockObj;
-            this.Width = width;
-            this.Height = height;
-            this.SleepTime = sleepTime;
-            this.Run = true;
         }
 
         public override void Go()
         {
             const int Radius = 6;
             var angle = 0;
-            
+
             var col = this.rand.Next(Radius * 2, this.Width - Radius);
             var row = this.rand.Next(0 + Radius, this.Height - Radius);
             var backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);

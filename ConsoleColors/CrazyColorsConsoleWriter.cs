@@ -21,13 +21,8 @@
         private readonly List<string> coordinates = new List<string>();
 
         public CrazyColorsConsoleWriter(object lockObj, int width, int height, int sleepTime, bool printStatistics)
+            : base(lockObj, width, height, sleepTime)
         {
-            this.LockObj = lockObj;
-            this.Width = width;
-            this.Height = height;
-            this.SleepTime = sleepTime;
-            this.Run = true;
-
             this.printStatistics = printStatistics;
         }
 

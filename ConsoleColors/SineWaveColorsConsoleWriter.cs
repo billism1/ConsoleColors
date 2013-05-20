@@ -15,12 +15,8 @@
         private readonly Random rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
 
         public SineWaveColorsConsoleWriter(object lockObj, int width, int height, int sleepTime)
+            : base(lockObj, width, height, sleepTime)
         {
-            this.LockObj = lockObj;
-            this.Width = width;
-            this.Height = height;
-            this.SleepTime = sleepTime;
-            this.Run = true;
         }
 
         public override void Go()
