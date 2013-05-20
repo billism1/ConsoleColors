@@ -27,7 +27,7 @@
         {
             const int Radius = 6;
             var angle = 0;
-
+            
             var col = this.rand.Next(Radius * 2, this.Width - Radius);
             var row = this.rand.Next(0 + Radius, this.Height - Radius);
             var backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
