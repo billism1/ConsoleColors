@@ -44,10 +44,9 @@
                     Console.CursorLeft = rand.Next(0, this.Width);
                     Console.CursorTop = rand.Next(0, this.Height);
                     Console.Write((char)(rand.Next(32, 126))); // Printable ascii latters
-                }
 
-                if (this.printStatistics)
                     PrinstStatistics(start, cellCount);
+                }
 
                 Thread.Sleep(this.SleepTime);
             }
@@ -55,6 +54,8 @@
 
         private void PrinstStatistics(DateTime start, int cellCount)
         {
+            if (!this.printStatistics) return;
+
             var product = Console.CursorLeft.ToString() + ":" + Console.CursorTop.ToString();
 
             if (!products.Contains(product))
@@ -63,15 +64,12 @@
             }
             this.Run = this.Run && products.Count < cellCount;
 
-            lock (this.LockObj)
-            {
-                Console.CursorLeft = 0;
-                Console.CursorTop = this.Height - 1;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine("Time Lapsed: " + (DateTime.Now - start));
-                Console.WriteLine(products.Count.ToString() + " of " + cellCount.ToString() + " cells populated.");
-            }
+            Console.CursorLeft = 0;
+            Console.CursorTop = this.Height - 2;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine("Time Lapsed: " + (DateTime.Now - start));
+            Console.WriteLine(products.Count.ToString() + " of " + cellCount.ToString() + " cells populated.");
         }
     }
 }
