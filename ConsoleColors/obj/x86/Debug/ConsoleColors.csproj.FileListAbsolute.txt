@@ -1,0 +1,5 @@
+D:\projects\ConsoleColors\ConsoleColors\bin\Debug\ConsoleColors.exe
+D:\projects\ConsoleColors\ConsoleColors\bin\Debug\ConsoleColors.pdb
+D:\projects\ConsoleColors\ConsoleColors\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\projects\ConsoleColors\ConsoleColors\obj\x86\Debug\ConsoleColors.exe
+D:\projects\ConsoleColors\ConsoleColors\obj\x86\Debug\ConsoleColors.pdb
