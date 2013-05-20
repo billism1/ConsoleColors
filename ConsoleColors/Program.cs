@@ -43,8 +43,8 @@ namespace ConsoleColors
 
         private static void Run()
         {
-            //Console.WindowWidth = 160;
-            //Console.WindowHeight = 70;
+            Console.WindowWidth = 160;
+            Console.WindowHeight = 70;
 
             Console.BufferWidth = Console.WindowWidth;
             Console.BufferHeight = Console.WindowHeight;
@@ -76,7 +76,7 @@ namespace ConsoleColors
         private static List<ConsoleWriterBase> GetWriters()
         {
             var writers = new List<ConsoleWriterBase>();
-            //writers.Add(new CrazyColorsConsoleWriter(lockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10, false));
+            writers.Add(new CrazyColorsConsoleWriter(lockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10, false));
             //writers.Add(new SineWaveColorsConsoleWriter(lockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 1));
             writers.Add(new SineWaveColorsConsoleWriter(lockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 5));
             writers.Add(new SineWaveColorsConsoleWriter(lockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10));
