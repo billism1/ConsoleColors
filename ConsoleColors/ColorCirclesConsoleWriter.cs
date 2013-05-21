@@ -22,30 +22,30 @@
             this.timedDelete = timedDelete;
         }
 
+        private delegate ConsoleColor GetConsoleColor();
+
+        private delegate char GetChar();
+
         public override void Go()
         {
             const int Radius = 6;
-            var angle = 0;
 
+            // Set initial location
             var col = this.rand.Next(Radius * 2, this.Width - Radius);
             var row = this.rand.Next(0 + Radius, this.Height - Radius);
-            var backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
 
             while (this.Run)
             {
-                var left = Math.Min(this.Width, Math.Max(0, col + (int)(Math.Cos(angle) * Radius)));
-                var top = Math.Min(this.Height, Math.Max(0, row + (int)(Math.Sin(angle) * Radius)));
+                // Draw circle
+                this.DrawCircle(
+                    col,
+                    row,
+                    Radius,
+                    () => (ConsoleColor)this.rand.Next(0, MaxColorEnum),
+                    () => (char)this.rand.Next(32, 126)); // Printable ascii latters
 
-                lock (this.LockObj)
-                {
-                    Console.CursorLeft = left;
-                    Console.CursorTop = top;
-                    Console.BackgroundColor = backgroundColor;
-                    Console.ForegroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
-                    Console.Write((char)this.rand.Next(32, 126)); // Printable ascii latters
-                }
-
-                if (this.timedDelete && angle == 0)
+                // Start circle deletion thread if flag is set
+                if (this.timedDelete)
                 {
                     var col1 = col;
                     var row1 = row;
@@ -53,18 +53,34 @@
                     clearThread.Start();
                 }
 
-                angle++;
+                // Get new location
+                col = Math.Min(this.Width - Radius, Math.Max(Radius, col + this.rand.Next(-10, 11)));
+                row = Math.Min(this.Height - Radius, Math.Max(Radius, row + this.rand.Next(-10, 11)));
 
-                if (angle >= Radius * Math.PI)
+                // Reset random object.
+                this.rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
+            }
+        }
+
+        private void DrawCircle(int col, int row, int radius, GetConsoleColor getConsoleColor, GetChar getChar)
+        {
+            var angle = 0;
+            var backgroundColor = getConsoleColor();
+
+            while (angle < radius * Math.PI)
+            {
+                var left = Math.Min(this.Width, Math.Max(0, col + (int)(Math.Cos(angle) * radius)));
+                var top = Math.Min(this.Height, Math.Max(0, row + (int)(Math.Sin(angle) * radius)));
+
+                lock (this.LockObj)
                 {
-                    // Get start position for next circle.
-                    angle = 0;
-                    col = Math.Min(this.Width - Radius, Math.Max(Radius, col + this.rand.Next(-10, 11)));
-                    row = Math.Min(this.Height - Radius, Math.Max(Radius, row + this.rand.Next(-10, 11)));
-                    backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
-                    this.rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
+                    Console.CursorLeft = left;
+                    Console.CursorTop = top;
+                    Console.BackgroundColor = backgroundColor;
+                    Console.Write(getChar());
                 }
 
+                angle++;
                 Thread.Sleep(this.SleepTime);
             }
         }
@@ -76,28 +92,8 @@
         /// </summary>
         private void BlackOutShape(int col, int row, int radius)
         {
-            //// TODO: Refactor so this circle is drawn from the same method the other circles are drawn from.
-
             Thread.Sleep(Math.Max(1, this.SleepTime) * 200); // Sleep before cleaning up the shape.
-
-            var angle = 0;
-
-            while (angle < radius * Math.PI)
-            {
-                var left = Math.Min(this.Width, Math.Max(0, col + (int)(Math.Cos(angle) * radius)));
-                var top = Math.Min(this.Height, Math.Max(0, row + (int)(Math.Sin(angle) * radius)));
-
-                lock (this.LockObj)
-                {
-                    Console.CursorLeft = left;
-                    Console.CursorTop = top;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write(' ');
-                }
-
-                angle++;
-                Thread.Sleep(this.SleepTime);
-            }
+            this.DrawCircle(col, row, radius, () => ConsoleColor.Black, () => ' ');
         }
     }
 }
