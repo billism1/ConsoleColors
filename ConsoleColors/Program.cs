@@ -70,12 +70,12 @@ namespace ConsoleColors
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30));
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40));
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 5, false));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10, false));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 20, false));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30, false));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40, false));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50, true));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 5, 6, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10, 6, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 20, 5, true));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30, 16, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40, 10, true));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50, 6, true));
             return writers;
         }
 
