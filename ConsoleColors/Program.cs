@@ -56,7 +56,7 @@ namespace ConsoleColors
             Console.ForegroundColor = ConsoleColor.White;
             Console.CursorLeft = 0;
             Console.CursorTop = Console.BufferHeight - 1;
-            Console.WriteLine("Press any key to quit.");
+            Console.Write("Press any key to quit.");
             Console.ReadKey();
         }
 
@@ -70,12 +70,12 @@ namespace ConsoleColors
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30));
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40));
             writers.Add(new SineWaveColorsConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 5));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 20));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40));
-            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 5, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 10, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 20, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 30, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 40, false));
+            writers.Add(new ColorCirclesConsoleWriter(LockObj, Console.BufferWidth - 1, Console.BufferHeight - 1, 50, true));
             return writers;
         }
 
