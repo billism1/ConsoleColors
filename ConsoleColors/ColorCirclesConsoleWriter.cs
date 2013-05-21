@@ -1,7 +1,6 @@
 ﻿namespace ConsoleColors
 {
     using System;
-    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Threading;
 
@@ -32,15 +31,10 @@
             var row = this.rand.Next(0 + Radius, this.Height - Radius);
             var backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
 
-            var cellsTraveled = 0;
-
-            var coordinates = new List<Tuple<int, int>>();
-
             while (this.Run)
             {
                 var left = Math.Min(this.Width, Math.Max(0, col + (int)(Math.Cos(angle) * Radius)));
                 var top = Math.Min(this.Height, Math.Max(0, row + (int)(Math.Sin(angle) * Radius)));
-                coordinates.Add(new Tuple<int, int>(left, top));
 
                 lock (this.LockObj)
                 {
@@ -51,27 +45,24 @@
                     Console.Write((char)this.rand.Next(32, 126)); // Printable ascii latters
                 }
 
-                cellsTraveled++;
+                if (this.timedDelete && angle == 0)
+                {
+                    var col1 = col;
+                    var row1 = row;
+                    var clearThread = new Thread(() => this.BlackOutShape(col1, row1, Radius));
+                    clearThread.Start();
+                }
+
                 angle++;
 
-                if (cellsTraveled >= Radius * Math.PI)
+                if (angle >= Radius * Math.PI)
                 {
                     // Get start position for next circle.
                     angle = 0;
-                    cellsTraveled = 0;
                     col = Math.Min(this.Width - Radius, Math.Max(Radius, col + this.rand.Next(-10, 11)));
                     row = Math.Min(this.Height - Radius, Math.Max(Radius, row + this.rand.Next(-10, 11)));
                     backgroundColor = (ConsoleColor)this.rand.Next(0, MaxColorEnum);
                     this.rand = new Random(int.Parse(Regex.Replace(Guid.NewGuid().ToString(), "[^\\d]", string.Empty).Substring(0, 4)));
-
-                    if (this.timedDelete)
-                    {
-                        var savedCoordinates = new List<Tuple<int, int>>(coordinates); // Create new list so we can clear the permanent one.
-                        var clearThread = new Thread(() => this.BlackOutShape(savedCoordinates));
-                        clearThread.Start();
-                    }
-
-                    coordinates.Clear();
                 }
 
                 Thread.Sleep(this.SleepTime);
@@ -83,21 +74,28 @@
         /// We can't actually detect if a cell has been overwritten (by another thread's writer) since the shape was made, so the 
         /// next best thing is to black-out the cell and not worry about it.
         /// </summary>
-        /// <param name="coordinates"></param>
-        private void BlackOutShape(IEnumerable<Tuple<int, int>> coordinates)
+        private void BlackOutShape(int col, int row, int radius)
         {
-            Thread.Sleep(Math.Max(1, this.SleepTime) * 100); // Sleep before cleaning up the shape.
+            //// TODO: Refactor so this circle is drawn from the same method the other circles are drawn from.
 
-            foreach (var coordinate in coordinates)
+            Thread.Sleep(Math.Max(1, this.SleepTime) * 200); // Sleep before cleaning up the shape.
+
+            var angle = 0;
+
+            while (angle < radius * Math.PI)
             {
+                var left = Math.Min(this.Width, Math.Max(0, col + (int)(Math.Cos(angle) * radius)));
+                var top = Math.Min(this.Height, Math.Max(0, row + (int)(Math.Sin(angle) * radius)));
+
                 lock (this.LockObj)
                 {
-                    Console.CursorLeft = coordinate.Item1;
-                    Console.CursorTop = coordinate.Item2;
+                    Console.CursorLeft = left;
+                    Console.CursorTop = top;
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write(' ');
                 }
 
+                angle++;
                 Thread.Sleep(this.SleepTime);
             }
         }
